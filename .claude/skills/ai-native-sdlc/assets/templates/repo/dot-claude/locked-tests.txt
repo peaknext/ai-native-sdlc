@@ -1,0 +1,7 @@
+# Tests that must not be edited while a bug is being fixed.
+# Read by .claude/hooks/protect_paths.py. One path or pattern per line.
+#
+# Bug-fix routine: write a failing test, commit it, add its path here, then fix the
+# code until the test passes. Remove the line when the fix is merged.
+# Example:
+# tests/test_reminders.py

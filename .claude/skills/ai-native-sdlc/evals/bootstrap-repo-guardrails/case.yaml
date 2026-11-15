@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: bootstrap-repo-guardrails
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The repo gets a CLAUDE.md with the real build, test and lint commands taken from package.json (no placeholders), an intent/ folder and REVIEW.md. The two stated rules are enforced deterministically, not only written as advice: a hook wired in .claude/settings.json blocks edits under src/generated and blocks production deploys without approval, and the hooks were actually tested. The reply explains what was installed and the difference between advisory guidance and enforced guardrails.

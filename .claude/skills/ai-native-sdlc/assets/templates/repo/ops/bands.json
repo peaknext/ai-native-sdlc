@@ -1,0 +1,37 @@
+{
+  "_about": "Control bands for production and process metrics. Read by ops/detect_bands.py. Detection is deterministic; the agent is only invoked once a band is breached, and the tier limits what it may do.",
+  "metrics": {
+    "ci_test_failure_rate": {
+      "description": "Share of CI test runs that fail, per day",
+      "direction": "high",
+      "baseline_points": 30,
+      "minimum_points": 10
+    },
+    "post_deploy_5xx_rate": {
+      "description": "Server-error rate in the hour after a deployment",
+      "direction": "high",
+      "baseline_points": 30,
+      "minimum_points": 10
+    },
+    "pr_cycle_time_hours": {
+      "description": "Median hours from pull request opened to merged, per week",
+      "direction": "high",
+      "baseline_points": 26,
+      "minimum_points": 8
+    }
+  },
+  "tiers": {
+    "0": { "action": "none" },
+    "1": { "action": "log" },
+    "2": {
+      "action": "diagnose",
+      "allowed_tools": "Read,Grep,Glob,Bash(gh run view *)",
+      "output": "intent.md with anomaly, evidence and open questions"
+    },
+    "3": {
+      "action": "propose",
+      "allowed_routes": ["pull-request", "runbook:rollback-deploy"],
+      "output": "a pull request into the review gate, or a pre-approved runbook; plus intent.md"
+    }
+  }
+}

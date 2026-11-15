@@ -1,0 +1,47 @@
+# First CI judgment step to automate: when the main pipeline fails, the agent reads
+# the log and says what most likely went wrong. It is read-only: it cannot change code.
+# Set `workflows:` below to the name of your main CI workflow.
+# Needs a repository secret named ANTHROPIC_API_KEY.
+name: Triage failed CI
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  triage:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Fetch the failed log
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run view ${{ github.event.workflow_run.id }} --log-failed > build.log || true
+
+      - name: Triage (read-only)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude -p "Read build.log. Identify the most likely cause of the failure, say \
+          whether it looks flaky or real and why, name the file and line to look at first, \
+          and write a summary of at most five lines." \
+            --allowedTools "Read,Grep,Glob" > triage.md
+
+      - name: Publish summary
+        run: |
+          echo "## CI failure triage" >> "$GITHUB_STEP_SUMMARY"
+          cat triage.md >> "$GITHUB_STEP_SUMMARY"
