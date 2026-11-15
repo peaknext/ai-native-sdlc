@@ -29,6 +29,8 @@ DEPLOY_PATTERNS = [
     r"\bdeploy\w*\b.*\bprod(uction)?\b",
     r"\bprod(uction)?\b.*\bdeploy\w*\b",
     r"\b(release|publish)\b.*\bprod(uction)?\b",
+    # Add this project's own forms here. For example, a deploy whose target is a variable
+    # cannot be shown to be staging:   r"\bdeploy(?:\.js\s+|:)[\"']?[$`]",
 ]
 # 2. The environment variable that carries the release manager's approval.
 APPROVAL_ENV = "RELEASE_APPROVAL"
