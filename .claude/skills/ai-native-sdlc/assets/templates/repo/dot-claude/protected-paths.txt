@@ -1,0 +1,20 @@
+# Paths the agent must not edit freely. Read by .claude/hooks/protect_paths.py.
+#
+#   block <pattern>   # the edit is refused; the reason is shown to the agent
+#   ask   <pattern>   # a person is asked to approve each edit
+#
+# Patterns are relative to the repo root. `*` also matches across folders.
+# Always give a reason and say who can approve: a block that explains itself gets
+# respected; one that does not gets worked around.
+
+ask   .claude/settings.json     # changes the guardrails themselves; code owner approves
+ask   .claude/hooks/*           # changes the guardrails themselves; code owner approves
+ask   .claude/protected-paths.txt  # this list; code owner approves
+block .env                      # secrets never go through the agent
+block .env.*                    # secrets never go through the agent
+
+# Examples to adapt:
+# block src/gen/*               # generated code; change the generator and re-run it
+# block vendor/*                # third-party code; update through the package manager
+# ask   migrations/*            # database changes need a change ticket; ask the DBA
+# ask   infra/*                 # infrastructure changes; platform team approves

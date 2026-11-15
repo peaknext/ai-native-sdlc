@@ -1,0 +1,31 @@
+# What the guardrail hooks are expected to decide. Run all of these with:
+#     python3 .claude/hooks/check_guardrails.py
+#
+#   expected  tool  argument
+#   expected: allow | ask | block       tool: edit | bash
+#
+# Add a line for every rule the team relies on, plus a line or two of ordinary work
+# that must NOT be stopped. Put the command in your test suite or CI, so that weakening
+# a guardrail fails the build.
+
+# ordinary work is not stopped
+allow  edit  README.md
+allow  bash  git status
+allow  bash  git commit -m "Prepare notes for the production deploy"
+
+# the guardrails protect themselves
+ask    edit  .claude/settings.json
+ask    edit  .claude/hooks/protect_paths.py
+
+# secrets
+block  edit  .env
+
+# production gate
+block  bash  make deploy ENV=production
+block  bash  git push --force origin main
+ask    bash  git push origin main
+
+# Examples to adapt:
+# block  edit  src/gen/client.py
+# block  bash  rm -rf src/gen
+# allow  bash  make deploy ENV=staging

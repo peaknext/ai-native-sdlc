@@ -1,0 +1,45 @@
+# Regression-test the agent's own setup.
+# Runs when CLAUDE.md, skills, hooks or the eval cases change, and every night.
+# Needs a repository secret named ANTHROPIC_API_KEY with a budget for eval runs.
+name: Agent evals
+
+on:
+  pull_request:
+    paths:
+      - "CLAUDE.md"
+      - ".claude/**"
+      - "evals/**"
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # cases start from earlier commits (base_ref)
+
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run eval suite
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        # Make this job a required status check so that a configuration change which
+        # lowers the pass rate cannot merge unnoticed.
+        run: python3 evals/run_evals.py --threshold 0.9
+
+      - name: Publish results
+        if: always()
+        run: |
+          echo "## Agent eval results" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat evals/results/summary.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || echo "no results" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

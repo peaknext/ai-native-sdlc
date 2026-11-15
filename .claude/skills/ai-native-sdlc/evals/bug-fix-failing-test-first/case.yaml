@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: bug-fix-failing-test-first
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The cause in shop/cart.py is found and fixed. A new test reproducing the bug is added and shown failing before the fix, ideally committed on its own before the fix commit. Existing tests are not edited. The full suite is run and its real output is shown. A short plan or summary names the files changed and the risk.
