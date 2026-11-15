@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "node --test test/",
+    "test": "node --test",
     "lint": "node --check src/index.js && node --check src/pricing.js",
     "start": "node src/index.js",
     "codegen": "echo 'regenerates src/generated from the API schema'",
