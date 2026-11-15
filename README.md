@@ -12,7 +12,8 @@ Adapted from Anthropic's article [The AI-native SDLC playbook](https://claude.co
 
 | File | What it is | Who it is for |
 |---|---|---|
-| [`PLAYBOOK.md`](PLAYBOOK.md) | The playbook, written in Thai: the six-stage loop, roles, approval gates, metrics, checklists and a glossary | People, whether or not they write code |
+| [`PLAYBOOK.en.md`](PLAYBOOK.en.md) | The playbook in English: the six-stage loop, roles, approval gates, metrics, checklists and a glossary | People, whether or not they write code |
+| [`PLAYBOOK.md`](PLAYBOOK.md) | The same playbook in Thai | Thai-speaking readers |
 | [`.claude/skills/ai-native-sdlc/`](.claude/skills/ai-native-sdlc/SKILL.md) | A skill that lets Claude follow the playbook on its own, with document templates and scripts (written in English) | Claude, and anyone who wants the detail |
 
 ### The loop in brief
@@ -60,6 +61,7 @@ The script never overwrites an existing file.
 | ไฟล์ | คืออะไร | สำหรับใคร |
 |---|---|---|
 | [`PLAYBOOK.md`](PLAYBOOK.md) | คู่มือภาษาไทย อธิบายวงจร 6 ขั้น บทบาท ด่านอนุมัติ ตัวชี้วัด checklist และอภิธานศัพท์ | คนอ่าน ทั้งคนเขียนโค้ดและไม่เขียนโค้ด |
+| [`PLAYBOOK.en.md`](PLAYBOOK.en.md) | คู่มือเดียวกัน ฉบับภาษาอังกฤษ | ผู้อ่านที่ใช้ภาษาอังกฤษ |
 | [`.claude/skills/ai-native-sdlc/`](.claude/skills/ai-native-sdlc/SKILL.md) | สกิลที่ทำให้ Claude ทำงานตาม playbook ได้เอง พร้อมแม่แบบเอกสารและสคริปต์ (เขียนเป็นภาษาอังกฤษ) | Claude และคนที่อยากดูรายละเอียด |
 
 ### วงจรโดยย่อ
