@@ -38,6 +38,7 @@ COMPONENTS = {
         "dot-claude/hooks/",
         "dot-claude/protected-paths.txt",
         "dot-claude/locked-tests.txt",
+        "dot-claude/guardrail-checks.txt",
     ],
     "agents": ["dot-claude/agents/"],
     "evals": ["evals/", "dot-github/workflows/agent-evals.yml"],
@@ -167,9 +168,12 @@ def cmd_init(args: argparse.Namespace) -> int:
     print("  1. Open CLAUDE.md and replace every TODO(...) with facts from this repo.")
     print("     Run each command once before writing it down.")
     if "hooks" in wanted:
-        print("  2. List the paths that must not be edited in .claude/protected-paths.txt,")
-        print("     then test a hook: echo '{\"tool_input\":{\"file_path\":\"<path>\"}}' | \\")
-        print("       python3 .claude/hooks/protect_paths.py")
+        print("  2. List the paths that must not be edited in .claude/protected-paths.txt and")
+        print("     set DEPLOY_PATTERNS in .claude/hooks/production_gate.py for this project.")
+        print("  3. Add one line per rule to .claude/guardrail-checks.txt, then run:")
+        print("       python3 .claude/hooks/check_guardrails.py")
+        print("     For a rule that must never be broken, also add a permissions.deny rule to")
+        print("     .claude/settings.json: it works even if a hook cannot run.")
     print("  -  Start the first change:  sdlc.py new <repo> \"<title>\"")
     return 0
 

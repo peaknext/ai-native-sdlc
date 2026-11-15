@@ -21,11 +21,13 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|NotebookEdit",
+        "matcher": "Edit|Write|NotebookEdit|Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect_paths.py"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect_paths.py",
+            "timeout": 10,
+            "onFailure": "block"
           }
         ]
       },
@@ -34,7 +36,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/production_gate.py"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/production_gate.py",
+            "timeout": 10,
+            "onFailure": "block"
           }
         ]
       }
@@ -45,7 +49,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format_on_edit.py"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format_on_edit.py",
+            "timeout": 60
           }
         ]
       }

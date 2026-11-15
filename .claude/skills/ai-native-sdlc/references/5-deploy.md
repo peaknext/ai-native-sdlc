@@ -82,10 +82,14 @@ Wiring, in `.claude/settings.json`:
 - **Exit 2:** the action is blocked and whatever was written to standard error is shown to the agent as the reason.
 - To **ask** a human, exit 0 and print: `{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "ask", "permissionDecisionReason": "..."}}` (`allow` and `deny` work the same way).
 - Use either the exit code or the JSON in one hook, not both.
+- **Fail closed.** By default a hook that crashes, times out or cannot start (no `python3` on the machine) does not stop the action. Adding `"onFailure": "block"` to the handler makes a broken guardrail block instead (Claude Code v2.1.295 or later). The template sets it, with a `"timeout"` in seconds. Tell the team what the hooks need installed, because a missing interpreter then stops all edits and commands.
+- In a git worktree, `CLAUDE_PROJECT_DIR` still points at the main checkout while the work happens elsewhere (the hook's `cwd` input follows the session). The template hooks judge paths against both.
 
-Formats change between versions. Before relying on a hook in production, check the current hooks reference (code.claude.com/docs/en/hooks) and test the hook by piping a sample JSON into it.
+**Prove it.** `python3 .claude/hooks/check_guardrails.py` runs every line of `.claude/guardrail-checks.txt` through the wired hooks and prints what each decides; `check_guardrails.py edit <path>` and `check_guardrails.py bash "<command>"` try one action. List the rules the team relies on and a few ordinary actions that must not be stopped, and put the command in the test suite or CI so that weakening a guardrail fails the build. This exercises the hooks, not a live session: when you report, say that a real session has not been watched refusing the action, and give the person the two-minute check to do themselves.
 
-The template `production_gate.py` blocks commands that look like a production deployment unless a release approval is present, and asks before a direct push to a protected branch.
+Formats change between versions. Before relying on a hook in production, check the current hooks reference (code.claude.com/docs/en/hooks).
+
+The template `production_gate.py` blocks commands that look like a production deployment unless a release approval is present, blocks a force-push to a protected branch, and asks before a direct push to one. Set its three options (what a deployment looks like here, the approval variable, the protected branches) for the project. It matches command text, so it is a safety net: the certain controls are branch protection and production credentials the agent cannot reach.
 
 Governance: the gate applies every time, for everyone. Allow and block decisions are logged with timestamps. The gate itself defines what counts as approval: an approved change ticket, or the release manager's sign-off.
 

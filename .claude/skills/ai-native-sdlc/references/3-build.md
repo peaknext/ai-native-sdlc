@@ -105,7 +105,19 @@ Design rules:
 - **A block must explain itself:** the reason and the route to approval, printed where the agent and the human will see it.
 - **Human-approval hooks belong at the Deploy gates,** not in the build loop. An approval prompt during build puts a person on the critical path of every parallel session.
 
-Templates (installed by `sdlc.py init --with hooks`): `protect_paths.py` (block or ask on listed paths, and lock tests during a fix), `format_on_edit.py`, `production_gate.py`, and a `settings.json` that wires them up. Mechanics of the hook format are in `5-deploy.md`.
+Templates (installed by `sdlc.py init --with hooks`):
+
+- `protect_paths.py`: blocks or asks on the paths listed in `.claude/protected-paths.txt`, and locks tests during a fix. Edits are judged exactly by path; shell commands that name a listed path and change files (`rm`, `sed -i`, a redirect, ...) are caught by pattern; git worktrees are covered.
+- `production_gate.py`: see `5-deploy.md`.
+- `format_on_edit.py`: does nothing until you list the project's formatter.
+- `check_guardrails.py` with `.claude/guardrail-checks.txt`: one command that shows what the hooks decide for each listed action. Add a line per rule and run it.
+- `settings.json`: wires them up, failing closed.
+
+These templates are tested. Configure them (the two lists, and the three settings at the top of `production_gate.py`) instead of rewriting them, then prove the result with `python3 .claude/hooks/check_guardrails.py`.
+
+When a rule is stated as "never", layer it: the hook, plus a `permissions.deny` rule in `.claude/settings.json` (for example `Edit(/src/generated/**)`), which holds even if the hook cannot run, plus where possible a check outside the agent altogether (CI that fails on a hand-edited generated file; production credentials that are not on developer machines). Say which layers exist and which do not.
+
+Mechanics of the hook format are in `5-deploy.md`.
 
 ## 6. Parallel sessions and subagents
 

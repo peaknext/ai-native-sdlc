@@ -158,6 +158,8 @@ python scripts/sdlc.py new  <repo-root> "Title of the change" --author "Name"
 
 `init` never overwrites an existing file; it reports what it created and what it skipped. Then do the part a script cannot: replace every placeholder with facts from this repo. Read the manifest files (`package.json`, `Makefile`, `pyproject.toml`, ...) to find the real build, test and lint commands and run each once to confirm it works before writing it into `CLAUDE.md`. A `CLAUDE.md` with placeholder commands is worse than none, because it will be trusted.
 
+When someone names things the AI must never do ("never edit the generated client", "never deploy on its own"), install the hooks and turn each rule into a deterministic control: a line in `.claude/protected-paths.txt` or a setting in `production_gate.py`, a `permissions.deny` rule as a second layer, and a line in `.claude/guardrail-checks.txt`. Then run `python3 .claude/hooks/check_guardrails.py` and show its output. The hook templates are already tested, so configure them instead of rewriting them. Details: `references/3-build.md` (section 5) and `references/5-deploy.md` (section 2).
+
 Bring in the heavier pieces in the order the team can absorb them; `references/adoption-and-metrics.md` gives the order and what each piece depends on. For someone working alone, `CLAUDE.md`, the `intent/` folder and a one-command test run are enough to start.
 
 ## Working with people who do not write code
